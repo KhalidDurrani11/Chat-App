@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chat App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .online-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #4ade80;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            text-align: right;
+        }
+
+        .message.received {
+            text-align: left;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 6px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .message.sent .message-time {
+            text-align: right;
+            color: #64748b;
+        }
+
+        .message.received .message-time {
+            text-align: left;
+            color: #64748b;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            margin-bottom: 15px;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        .typing-indicator.show {
+            display: flex;
+        }
+
+        .typing-bubble {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            border-bottom-left-radius: 6px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #94a3b8;
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #64748b;
+            margin-top: 100px;
+            font-size: 14px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>💬 Chat App</h1>
+            <div class="online-indicator"></div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="empty-state">
+                <div class="empty-state-icon">👋</div>
+                <p>Start a conversation!<br>Type "hi" to chat with our bot.</p>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-bubble">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..."
+                    maxlength="500"
+                >
+                <button class="send-button" id="sendButton">
+                    ➤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // In-memory storage for messages (replaces localStorage in this environment)
+        let messages = [];
+        
+        // DOM elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Bot responses for simple chatbot functionality
+        const botResponses = {
+            'hi': ['Hello! 👋 How are you today?', 'Hi there! 😊 Nice to meet you!', 'Hey! How can I help you?'],
+            'hello': ['Hello! 👋 How are you today?', 'Hi there! 😊 Nice to meet you!', 'Hey! How can I help you?'],
+            'how are you': ['I\'m doing great! Thanks for asking! 😊', 'I\'m fantastic! How about you?', 'All good here! 🤖'],
+            'what is your name': ['I\'m ChatBot! 🤖 Your friendly assistant!', 'You can call me ChatBot! 😊'],
+            'bye': ['Goodbye! 👋 Have a great day!', 'See you later! 😊', 'Bye! Come back soon! 👋'],
+            'thanks': ['You\'re welcome! 😊', 'Happy to help! 🎉', 'Anytime! 👍'],
+            'thank you': ['You\'re welcome! 😊', 'Happy to help! 🎉', 'Anytime! 👍'],
+            'help': ['I\'m here to chat! Try saying hi, asking how I am, or just have a conversation! 😊'],
+            'time': [`It's ${new Date().toLocaleTimeString()} right now! ⏰`],
+            'date': [`Today is ${new Date().toLocaleDateString()}! 📅`],
+            'joke': ['Why don\'t scientists trust atoms? Because they make up everything! 😄', 'What do you call a fake noodle? An impasta! 🍝😂', 'Why did the scarecrow win an award? He was outstanding in his field! 🌾😄'],
+            'default': ['That\'s interesting! Tell me more! 🤔', 'I see! What else would you like to chat about?', 'Hmm, I\'m not sure about that. Can you ask me something else? 😊', 'That sounds cool! What\'s on your mind?']
+        };
+
+        // Initialize chat
+        function initChat() {
+            loadMessages();
+            if (messages.length > 0) {
+                hideEmptyState();
+                displayMessages();
+            }
+        }
+
+        // Load messages from memory
+        function loadMessages() {
+            // Messages are already in memory, no need to load from storage
+        }
+
+        // Save messages to memory
+        function saveMessages() {
+            // Messages are already saved in memory
+        }
+
+        // Hide empty state
+        function hideEmptyState() {
+            const emptyState = chatMessages.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Display all messages
+        function displayMessages() {
+            chatMessages.innerHTML = '';
+            messages.forEach(message => {
+                createMessageElement(message.text, message.type, message.timestamp);
+            });
+            scrollToBottom();
+        }
+
+        // Create message element
+        function createMessageElement(text, type, timestamp) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'message-bubble';
+            messageBubble.textContent = text;
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = timestamp || getCurrentTime();
+            
+            messageDiv.appendChild(messageBubble);
+            messageDiv.appendChild(messageTime);
+            chatMessages.appendChild(messageDiv);
+            
+            scrollToBottom();
+        }
+
+        // Get current time
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Send message
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (text === '') return;
+            
+            hideEmptyState();
+            
+            // Add user message
+            const timestamp = getCurrentTime();
+            messages.push({ text, type: 'sent', timestamp });
+            createMessageElement(text, 'sent', timestamp);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Save messages
+            saveMessages();
+            
+            // Show typing indicator and generate bot response
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                generateBotResponse(text);
+            }, 1000 + Math.random() * 1500); // Random delay between 1-2.5 seconds
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            typingIndicator.classList.add('show');
+            scrollToBottom();
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            typingIndicator.classList.remove('show');
+        }
+
+        // Generate bot response
+        function generateBotResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            let response;
+            
+            // Check for specific keywords
+            for (const [key, responses] of Object.entries(botResponses)) {
+                if (key !== 'default' && lowerMessage.includes(key)) {
+                    response = responses[Math.floor(Math.random() * responses.length)];
+                    break;
+                }
+            }
+            
+            // Use default response if no match found
+            if (!response) {
+                const defaultResponses = botResponses.default;
+                response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            }
+            
+            // Add bot message
+            const timestamp = getCurrentTime();
+            messages.push({ text: response, type: 'received', timestamp });
+            createMessageElement(response, 'received', timestamp);
+            
+            // Save messages
+            saveMessages();
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Auto-resize input and character limit feedback
+        chatInput.addEventListener('input', function() {
+            const remaining = 500 - this.value.length;
+            if (remaining < 50) {
+                this.style.borderColor = remaining < 10 ? '#ef4444' : '#f59e0b';
+            } else {
+                this.style.borderColor = '#e2e8f0';
+            }
+        });
+
+        // Initialize the chat when page loads
+        initChat();
+
+        // Add some sample messages for demonstration
+        if (messages.length === 0) {
+            setTimeout(() => {
+                hideEmptyState();
+                const welcomeTimestamp = getCurrentTime();
+                messages.push({ 
+                    text: 'Welcome to ChatApp! 🎉 I\'m your friendly chatbot. Say hi to get started!', 
+                    type: 'received', 
+                    timestamp: welcomeTimestamp 
+                });
+                createMessageElement(
+                    'Welcome to ChatApp! 🎉 I\'m your friendly chatbot. Say hi to get started!', 
+                    'received', 
+                    welcomeTimestamp
+                );
+                saveMessages();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
