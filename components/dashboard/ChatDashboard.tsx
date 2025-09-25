@@ -70,7 +70,7 @@ const ChatDashboard: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10 min-h-0 max-h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col relative z-10 h-full">
         {selectedChat ? (
           <ChatWindow chat={selectedChat} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         ) : (

@@ -20,7 +20,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading = 
   }, [text, isLoading, onSendMessage]);
 
   return (
-    <div className="p-4 bg-gray-800/50 backdrop-blur-xl border-t border-gray-700/50 flex-shrink-0 relative">
+    <div className="p-4 bg-gray-800/90 backdrop-blur-xl border-t border-gray-700/50">
       <form onSubmit={handleSubmit} className="flex items-center gap-3">
         <motion.button 
           type="button" 
