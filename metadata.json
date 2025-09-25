@@ -1,0 +1,5 @@
+{
+  "name": "AetherChat - Real-Time Chat UI",
+  "description": "A beautiful, animated, and responsive real-time chat application interface built with React, Tailwind CSS, and Framer Motion. It features a modern design with light and dark modes, smooth animations, and a WhatsApp-style layout.",
+  "requestFramePermissions": []
+}
