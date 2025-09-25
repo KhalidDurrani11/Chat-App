@@ -11,24 +11,24 @@ interface MessageAreaProps {
 
 const TypingIndicator = () => (
     <motion.div 
-        className="flex items-center space-x-1.5 p-2"
+        className="flex items-center space-x-1.5 p-3"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 10 }}
     >
         <span className="sr-only">Typing...</span>
         <motion.div
-            className="h-2 w-2 bg-gray-400 rounded-full"
+            className="h-2 w-2 bg-purple-400 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
         ></motion.div>
         <motion.div
-            className="h-2 w-2 bg-gray-400 rounded-full"
+            className="h-2 w-2 bg-purple-400 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
         ></motion.div>
         <motion.div
-            className="h-2 w-2 bg-gray-400 rounded-full"
+            className="h-2 w-2 bg-purple-400 rounded-full"
             animate={{ y: [0, -4, 0] }}
             transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
         ></motion.div>
@@ -64,7 +64,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({ messages, isTyping }) => {
             exit={{ opacity: 0 }}
             className="flex justify-start"
            >
-                <div className="bg-white dark:bg-gray-700 rounded-2xl rounded-bl-none p-2 shadow-md max-w-sm flex items-center">
+                <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl rounded-bl-none shadow-lg max-w-sm flex items-center border border-gray-600/50">
                     <TypingIndicator />
                 </div>
            </motion.div>

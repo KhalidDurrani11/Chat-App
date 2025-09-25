@@ -20,24 +20,24 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading = 
   }, [text, isLoading, onSendMessage]);
 
   return (
-    <div className="p-6 bg-black/20 backdrop-blur-xl border-t border-white/10 flex-shrink-0">
-      <form onSubmit={handleSubmit} className="flex items-center gap-4">
+    <div className="p-4 bg-gray-800/50 backdrop-blur-xl border-t border-gray-700/50 flex-shrink-0">
+      <form onSubmit={handleSubmit} className="flex items-center gap-3">
         <motion.button 
           type="button" 
-          className="p-3 rounded-full hover:bg-white/10 transition-colors"
+          className="p-2 rounded-full hover:bg-white/10 transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Smile className="text-gray-300" size={20} />
+          <Smile className="text-gray-300" size={18} />
         </motion.button>
         
         <motion.button 
           type="button" 
-          className="p-3 rounded-full hover:bg-white/10 transition-colors"
+          className="p-2 rounded-full hover:bg-white/10 transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Paperclip className="text-gray-300" size={20} />
+          <Paperclip className="text-gray-300" size={18} />
         </motion.button>
         
         <div className="flex-1 relative">
@@ -47,25 +47,25 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, isLoading = 
             onChange={(e) => setText(e.target.value)}
             placeholder={isLoading ? "AI is thinking..." : "Type a message..."}
             disabled={isLoading}
-            className="w-full px-6 py-4 rounded-2xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
         
         <motion.button
           type="submit"
           disabled={!text.trim() || isLoading}
-          className={`p-4 rounded-2xl text-white transition-all duration-200 ${
+          className={`p-3 rounded-2xl text-white transition-all duration-200 ${
             !text.trim() || isLoading
               ? 'bg-gray-600 cursor-not-allowed'
-              : 'bg-gradient-to-br from-blue-500 to-purple-600 hover:shadow-lg'
+              : 'bg-gradient-to-br from-purple-500 to-blue-600 hover:shadow-lg'
           }`}
           whileHover={!isLoading && text.trim() ? { scale: 1.05 } : {}}
           whileTap={!isLoading && text.trim() ? { scale: 0.95 } : {}}
         >
           {isLoading ? (
-            <Loader2 className="animate-spin" size={20} />
+            <Loader2 className="animate-spin" size={18} />
           ) : (
-            <Send size={20} />
+            <Send size={18} />
           )}
         </motion.button>
       </form>
