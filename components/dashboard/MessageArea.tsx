@@ -46,29 +46,31 @@ const MessageArea: React.FC<MessageAreaProps> = ({ messages, isTyping }) => {
   }, [messages, isTyping]);
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto p-4 space-y-4">
-      <AnimatePresence>
-        {messages.map((msg, index) => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            isSender={msg.senderId === CURRENT_USER_ID}
-            showAvatar={index === 0 || messages[index - 1].senderId !== msg.senderId}
-          />
-        ))}
-      </AnimatePresence>
-       {isTyping && (
-           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="flex justify-start"
-           >
-                <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl rounded-bl-none shadow-lg max-w-sm flex items-center border border-gray-600/50">
-                    <TypingIndicator />
-                </div>
-           </motion.div>
-       )}
+    <div ref={scrollRef} className="h-full overflow-y-auto p-4 space-y-4 min-h-0">
+      <div className="min-h-full flex flex-col justify-end">
+        <AnimatePresence>
+          {messages.map((msg, index) => (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              isSender={msg.senderId === CURRENT_USER_ID}
+              showAvatar={index === 0 || messages[index - 1].senderId !== msg.senderId}
+            />
+          ))}
+        </AnimatePresence>
+         {isTyping && (
+             <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex justify-start"
+             >
+                  <div className="bg-gray-700/80 backdrop-blur-xl rounded-2xl rounded-bl-none shadow-lg max-w-sm flex items-center border border-gray-600/50">
+                      <TypingIndicator />
+                  </div>
+             </motion.div>
+         )}
+      </div>
     </div>
   );
 };
