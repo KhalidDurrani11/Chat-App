@@ -1,6 +1,6 @@
-# AetherChat - Real-time AI Chat Application
+# ChatFlow - AI-Powered Chat Application
 
-A modern, beautiful, and fully functional AI-powered chat application built with React, TypeScript, Clerk authentication, Google Gemini AI, and Supabase.
+A modern, beautiful, and fully functional AI-powered chat application built with React, TypeScript, Clerk authentication, Google Gemini AI, and Supabase. Features a stunning dark aesthetic theme with purple/blue gradients.
 
 <div align="center">
 <img width="1200" height="475" alt="AetherChat Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
