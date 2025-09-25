@@ -133,17 +133,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onToggleSidebar }) => {
         ))}
       </div>
 
-      <div className="h-full flex flex-col">
-        <div className="flex-shrink-0">
+      <div className="h-full relative">
+        <div className="absolute top-0 left-0 right-0 z-20">
           <ChatHeader chat={chat} onToggleSidebar={onToggleSidebar} />
         </div>
         
-        <div className="flex-1 min-h-0 overflow-hidden">
+        <div className="absolute top-16 bottom-20 left-0 right-0 overflow-hidden">
           <MessageArea messages={messages} isTyping={isTyping} />
           <div ref={messagesEndRef} />
         </div>
         
-        <div className="flex-shrink-0 relative z-10">
+        <div className="absolute bottom-0 left-0 right-0 z-30">
           <MessageInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>
       </div>
